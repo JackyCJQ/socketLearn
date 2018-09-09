@@ -1,31 +1,28 @@
-package com.jacky.netty.Discard;
+package com.jacky.netty.end1;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 
-public class ServerHandler extends ChannelHandlerAdapter {
+public class ClientHandler extends ChannelHandlerAdapter {
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("Client channel active..@");
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
-            ByteBuf buffer = (ByteBuf) msg;
-            System.out.println(buffer.toString(CharsetUtil.UTF_8));
-            //写回给客户端
-            ctx.writeAndFlush(Unpooled.copiedBuffer("jacky".getBytes()));
+            String response = (String) msg;
+            System.out.println("CLinet:" + response);
         } finally {
             ReferenceCountUtil.release(msg);
         }
-
-
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 
-        cause.printStackTrace();
         ctx.close();
     }
 }
